@@ -1,5 +1,6 @@
-resolver:  lts-3.12
+resolver:  lts-3.17
 packages: ['.']
-extra-deps: []
+extra-deps:
+  - Spock-0.10.0.1
 flags: {}
 extra-package-dbs: []
