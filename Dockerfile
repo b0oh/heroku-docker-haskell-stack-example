@@ -1,19 +1,27 @@
 FROM heroku/cedar:14
 
-RUN apt-get install wget -y
-RUN wget -q -O- https://s3.amazonaws.com/download.fpcomplete.com/ubuntu/fpco.key | apt-key add -
-RUN echo 'deb http://download.fpcomplete.com/ubuntu trusty main' | tee /etc/apt/sources.list.d/fpco.list
-RUN apt-get update && apt-get install stack -y
+RUN mkdir -p /app/user/bin /app/.profile.d /app/build
 
-RUN mkdir -p /app/src
-ADD docker-haskell.cabal /app/src
-ADD stack.yaml /app/src
-WORKDIR /app/src
+ENV HOME /app/user
+ENV STACK_VERSION 1.0.0
+ENV STACK_PATH $HOME/bin
+ENV PATH $STACK_PATH:$PATH
 
-RUN stack setup --resolver=lts-3.17
-RUN stack install Spock --resolver=lts-3.17
+RUN echo export HOME=/app/user > /app/.profile.d/home
+RUN echo export PATH=$STACK_PATH:\$PATH > /app/.profile.d/path
 
-ADD . /app/src
+RUN apt-get update
+RUN apt-get install libgmp-dev zlib1g-dev -y
+RUN wget -qO- https://github.com/commercialhaskell/stack/releases/download/v$STACK_VERSION/stack-$STACK_VERSION-linux-x86_64.tar.gz | tar zxf -  --wildcards '*/stack' --to-stdout > $STACK_PATH/stack && \
+    chmod a+x $STACK_PATH/stack
+
+ADD docker-haskell.cabal /app/build
+ADD stack.yaml /app/build
+WORKDIR /app/build
+
+RUN stack install Spock persistent persistent-postgresql persistent-template --install-ghc --resolver=lts-3.17
+
+ADD . /app/build
 
 RUN stack build --resolver=lts-3.17
-RUN mkdir -p /app/user && cp $(stack path --dist-dir)/build/docker-haskell/docker-haskell /app/user/docker-haskell
+RUN cp $(stack path --dist-dir)/build/docker-haskell/docker-haskell /app/user/docker-haskell

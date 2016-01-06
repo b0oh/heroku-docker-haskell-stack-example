@@ -16,6 +16,8 @@ library
   default-extensions:  FlexibleContexts, FlexibleInstances, GADTs, GeneralizedNewtypeDeriving, MultiParamTypeClasses,
                        OverloadedStrings, QuasiQuotes, TemplateHaskell, TypeFamilies
   build-depends:       base >= 4.7 && < 5
+                     , bytestring
+                     , monad-control
                      , monad-logger
                      , persistent
                      , persistent-postgresql
@@ -23,6 +25,8 @@ library
                      , resource-pool
                      , Spock
                      , text
+                     , transformers
+                     , random
 
 executable docker-haskell
   hs-source-dirs:      app

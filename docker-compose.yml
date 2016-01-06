@@ -2,9 +2,13 @@ web:
   build: .
   command: 'bash -c ''./docker-haskell'''
   working_dir: /app/user
+  environment:
+    - DATABASE_URL=postgres://postgres:@localhost:5432/api_dev
   ports:
     - 3000:3000
 shell:
   build: .
   command: bash
   working_dir: /app
+  environment:
+    - DATABASE_URL=postgres://postgres:@localhost:5432/api_dev
