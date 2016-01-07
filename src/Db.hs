@@ -1,4 +1,4 @@
-module Db where
+module Db (SqlBackend, Entity(..), Artist(..), runDb, createPool, runMigrations, selectArtists) where
 
 import Data.Text (Text)
 import Data.Pool (Pool)
@@ -6,8 +6,8 @@ import Control.Monad.Logger (runStdoutLoggingT)
 import Control.Monad.IO.Class (MonadIO)
 import Control.Monad.Trans.Control (MonadBaseControl)
 import Database.Persist.TH (mkPersist, sqlSettings, persistLowerCase, mkMigrate, share)
-import Database.Persist.Sql (ConnectionPool, Entity(..), SqlBackend, SqlPersist, SqlPersistM,
-                             runSqlPersistM, runSqlPersistMPool)
+import Database.Persist.Sql (ConnectionPool, Entity(..), SqlBackend, SqlPersist, SqlPersistM, SqlPersistT,
+                             runSqlPersistM, runSqlPersistMPool, selectList)
 import Database.Persist.Postgresql (ConnectionString, createPostgresqlPool, runMigration)
 
 share [mkPersist sqlSettings, mkMigrate "migrateAll"] [persistLowerCase|
@@ -30,3 +30,6 @@ createPool connStr poolSize = runStdoutLoggingT (createPostgresqlPool connStr po
 
 runMigrations :: SqlPersistM ()
 runMigrations = runMigration migrateAll
+
+selectArtists :: MonadIO m => SqlPersistT m [Entity Artist]
+selectArtists = selectList [] []

@@ -16,7 +16,9 @@ library
   default-extensions:  FlexibleContexts, FlexibleInstances, GADTs, GeneralizedNewtypeDeriving, MultiParamTypeClasses,
                        OverloadedStrings, QuasiQuotes, TemplateHaskell, TypeFamilies
   build-depends:       base >= 4.7 && < 5
+                     , aeson
                      , bytestring
+                     , containers
                      , monad-control
                      , monad-logger
                      , persistent
@@ -26,10 +28,9 @@ library
                      , Spock
                      , text
                      , transformers
-                     , random
 
 executable docker-haskell
   hs-source-dirs:      app
   main-is:             Main.hs
   default-language:    Haskell2010
-  build-depends:       base, docker-haskell
+  build-depends:       base, bytestring, docker-haskell
