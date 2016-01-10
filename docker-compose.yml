@@ -3,7 +3,7 @@ web:
   command: 'bash -c ''./docker-haskell'''
   working_dir: /app/user
   environment:
-    - DATABASE_URL=postgres://postgres:@localhost:5432/api_dev
+    - DATABASE_URL=postgres://postgres:@192.168.0.1:5432/api_dev
   ports:
     - 3000:3000
 shell:
