@@ -1,4 +1,4 @@
-module Db (SqlBackend, Entity(..), Artist(..), runDb, createPool, runMigrations, selectArtists) where
+module Db (ConnectionPool, SqlBackend, Entity(..), Artist(..), runDb, createPool, runMigrations, selectArtists) where
 
 import Data.Text (Text)
 import Data.Pool (Pool)
@@ -9,6 +9,8 @@ import Database.Persist.TH (mkPersist, sqlSettings, persistLowerCase, mkMigrate,
 import Database.Persist.Sql (ConnectionPool, Entity(..), SqlBackend, SqlPersist, SqlPersistM, SqlPersistT,
                              runSqlPersistM, runSqlPersistMPool, selectList)
 import Database.Persist.Postgresql (ConnectionString, createPostgresqlPool, runMigration)
+
+import Config
 
 share [mkPersist sqlSettings, mkMigrate "migrateAll"] [persistLowerCase|
 Artist
@@ -25,8 +27,11 @@ instance DbBackend SqlBackend where
 instance DbBackend (Pool SqlBackend) where
   runDb = flip runSqlPersistMPool
 
-createPool :: (MonadBaseControl IO m, MonadIO m) => ConnectionString -> Int -> m ConnectionPool
-createPool connStr poolSize = runStdoutLoggingT (createPostgresqlPool connStr poolSize)
+createPool :: Config -> IO ConnectionPool
+createPool config = do
+  connStr <- require config "url"
+  poolSize <- lookupDefault 10 config "pool_size"
+  runStdoutLoggingT (createPostgresqlPool connStr poolSize)
 
 runMigrations :: SqlPersistM ()
 runMigrations = runMigration migrateAll

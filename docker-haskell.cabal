@@ -11,13 +11,14 @@ cabal-version:       >= 1.10
 
 library
   hs-source-dirs:      src
-  exposed-modules:     Api, Db
+  exposed-modules:     Api, Config, Db
   default-language:    Haskell2010
   default-extensions:  FlexibleContexts, FlexibleInstances, GADTs, GeneralizedNewtypeDeriving, MultiParamTypeClasses,
                        OverloadedStrings, QuasiQuotes, TemplateHaskell, TypeFamilies
   build-depends:       base >= 4.7 && < 5
                      , aeson
                      , bytestring
+                     , configurator
                      , containers
                      , monad-control
                      , monad-logger
@@ -33,4 +34,5 @@ executable docker-haskell
   hs-source-dirs:      app
   main-is:             Main.hs
   default-language:    Haskell2010
-  build-depends:       base, bytestring, docker-haskell
+  default-extensions:  OverloadedStrings
+  build-depends:       base, docker-haskell

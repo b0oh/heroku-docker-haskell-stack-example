@@ -1,16 +1,12 @@
 module Main where
 
-import Data.Maybe (fromMaybe)
-import qualified Data.ByteString.Char8 as BS
-import System.Environment (getEnv, lookupEnv)
-
+import Config
 import Db
-import Api hiding (runDb)
+import Api
 
 main :: IO ()
 main = do
-  port <- fmap (fromMaybe "3000") (lookupEnv "PORT")
-  dbUrl <- getEnv "DATABASE_URL"
-  pool <- createPool (BS.pack dbUrl) 10
+  config <- loadConfig
+  pool <- createPool (subconfig "db" config)
   runDb pool runMigrations
-  runApi (read port) pool
+  runApi (subconfig "api" config) pool

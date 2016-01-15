@@ -10,7 +10,7 @@ ADD docker-haskell.cabal /app/build
 ADD stack.yaml /app/build
 WORKDIR /app/build
 
-RUN stack build Spock persistent persistent-postgresql persistent-template --install-ghc --resolver=lts-3.17
+RUN stack build configurator persistent persistent-postgresql persistent-template Spock --install-ghc --resolver=lts-3.17
 
 ADD . /app/build
 
