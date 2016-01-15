@@ -5,6 +5,7 @@ import Data.Pool (Pool)
 import Control.Monad.IO.Class (liftIO)
 import Data.Aeson (ToJSON(..), (.=), object)
 import qualified Data.Map as M
+import Network.Wai.Middleware.Static ((>->), addBase, noDots, staticPolicy)
 import Web.Spock.Safe
 
 import Config
@@ -35,7 +36,11 @@ api = do
 runApi :: Config -> ConnectionPool -> IO ()
 runApi config pool = do
   port <- liftIO (require config "port")
-  runSpock port spock'
+  runSpock (read port) spock'
   where
-    spock' = spock spockConfig api
+    spock' = spock spockConfig app
     spockConfig = defaultSpockCfg () (PCPool pool) ()
+    app = do
+      staticPath <- liftIO (lookupDefault "static" config "static_path")
+      middleware $ staticPolicy (noDots >-> addBase staticPath)
+      api

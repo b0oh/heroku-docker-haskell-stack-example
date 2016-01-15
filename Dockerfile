@@ -10,9 +10,12 @@ ADD docker-haskell.cabal /app/build
 ADD stack.yaml /app/build
 WORKDIR /app/build
 
-RUN stack build configurator persistent persistent-postgresql persistent-template Spock --install-ghc --resolver=lts-3.17
+RUN stack build configurator persistent persistent-postgresql persistent-template Spock wai-middleware-static --install-ghc --resolver=lts-3.17
 
 ADD . /app/build
+
+COPY static /app/user/static
+COPY config/heroku.cfg /app/user
 
 RUN stack build --resolver=lts-3.17
 RUN cp $(stack path --dist-dir)/build/docker-haskell/docker-haskell /app/user/docker-haskell

@@ -29,6 +29,7 @@ library
                      , Spock
                      , text
                      , transformers
+                     , wai-middleware-static
 
 executable docker-haskell
   hs-source-dirs:      app
