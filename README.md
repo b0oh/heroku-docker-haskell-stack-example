@@ -7,11 +7,12 @@ Example of web application on Haskell
 * Stack
 * VirtualBox
 * Docker, docker-machine, docker-compose
+* Heroku CLI
 
 On macOS all dependencies except VirtualBox can be installed by brew:
 
 ```
-$ brew install haskell-stack docker docker-machine docker-compose
+$ brew install haskell-stack docker docker-machine docker-compose heroku
 ```
 
 ## Instalation
@@ -53,4 +54,20 @@ $ open "http://$(docker-machine ip docker-default):3000"
 
 ```
 $ docker-compose stop web
+```
+
+## Deploy
+
+### Initial setup
+
+```
+$ heroku login
+$ heroku create
+$ heroku plugins:install heroku-container-tools
+```
+
+### Release
+
+```
+$ heroku container:release
 ```

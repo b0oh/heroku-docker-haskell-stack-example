@@ -1,0 +1,11 @@
+{
+  "name": "Heroku Docker Haskell Stack Example",
+  "description": "Example of Haskell application using Docker on Heroku",
+  "repository": "https://github.com/meatmachine/heroku-docker-haskell-stack-example",
+  "keywords": [
+    "docker",
+    "haskell",
+    "stack"
+  ],
+  "image": "heroku/cedar:14"
+}
