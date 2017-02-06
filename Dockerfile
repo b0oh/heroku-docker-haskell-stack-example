@@ -5,6 +5,7 @@ RUN echo 'deb http://download.fpcomplete.com/ubuntu trusty main' | tee /etc/apt/
 RUN apt-get update && apt-get install stack -y
 
 RUN stack build http-types wai warp --install-ghc --resolver=lts-7.19
+RUN stack build Spock --resolver=lts-7.19
 
 ADD . /app/src
 WORKDIR /app/src
