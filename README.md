@@ -8,11 +8,12 @@ Example of web application on Haskell
 * VirtualBox
 * Docker, docker-machine, docker-compose
 * Heroku CLI
+* PostgreSQL
 
 On macOS all dependencies except VirtualBox can be installed by brew:
 
 ```
-$ brew install haskell-stack docker docker-machine docker-compose heroku
+$ brew install haskell-stack docker docker-machine docker-compose heroku postgresql
 ```
 
 ## Instalation
@@ -21,6 +22,12 @@ $ brew install haskell-stack docker docker-machine docker-compose heroku
 $ git clone git@github.com:meatmachine/heroku-docker-haskell-stack-example.git docker-haskell
 $ cd docker-haskell
 $ stack build --install-ghc
+```
+
+## Database setup
+
+```
+psql -U postgres -c 'create database docker_haskell_api_dev;'
 ```
 
 ## Running
@@ -63,6 +70,7 @@ $ docker-compose stop web
 ```
 $ heroku login
 $ heroku create
+$ heroku addons:create heroku-postgresql:hobby-dev
 $ heroku plugins:install heroku-container-tools
 ```
 

@@ -3,7 +3,8 @@ resolver: lts-7.19
 packages:
 - '.'
 
-extra-deps: []
+extra-deps:
+- postgresql-simple-migration-0.1.8.0
 
 flags: {}
 
