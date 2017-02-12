@@ -1,0 +1,9 @@
+api {
+  port = "3000"
+}
+
+db {
+  url = "postgres://postgres:@localhost:5432/docker_haskell_api_dev"
+  pool_size = 5
+  migrations_path = "migrations"
+}

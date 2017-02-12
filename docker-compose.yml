@@ -1,8 +1,9 @@
 web:
   build: .
-  command: 'bash -c ''./docker-haskell'''
+  command: 'bash -c ''./docker-haskell ./heroku.conf'''
   working_dir: /app/user
   environment:
+    - PORT=3000
     - DATABASE_URL=postgres://postgres:@192.168.99.1:5432/docker_haskell_api_dev
   ports:
     - 3000:3000

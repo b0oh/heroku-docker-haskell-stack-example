@@ -12,12 +12,13 @@ extra-source-files:  README.md
 
 library
   hs-source-dirs:      src
-  exposed-modules:     Api, Db
+  exposed-modules:     Api, Db, Config
   default-language:    Haskell2010
   default-extensions:  OverloadedStrings
   build-depends:       base >= 4.7 && < 5
                      , aeson
                      , bytestring
+                     , configurator
                      , containers
                      , lifted-base
                      , postgresql-simple
@@ -31,4 +32,3 @@ executable docker-haskell
   default-language:    Haskell2010
   default-extensions:  OverloadedStrings
   build-depends:       base, docker-haskell
-                     , bytestring

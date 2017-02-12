@@ -1,1 +1,1 @@
-web: ./docker-haskell
+web: ./docker-haskell ./heroku.conf

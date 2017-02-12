@@ -1,13 +1,15 @@
 module Api (runApi) where
 
+import qualified Data.Map as M
+
+import Control.Monad.IO.Class (liftIO)
 import Data.ByteString (ByteString)
 import Data.Text (Text)
 import Data.Aeson (ToJSON(..), (.=), object)
 import Web.Spock (SpockM, SpockActionCtx, get, json, middleware, root, runSpock, runQuery, spock, text)
 import Web.Spock.Config (PoolOrConn(..), ConnBuilder(..), PoolCfg(..), defaultSpockCfg)
 
-import qualified Data.Map as M
-
+import Config
 import Db
 
 type ApiAction ctx a = SpockActionCtx ctx Connection () () a
@@ -33,14 +35,20 @@ api =
       bands <- runQuery selectBands
       respond "bands" bands
 
-runApi :: Int -> ByteString -> IO ()
-runApi port dbUrl =
+runApi :: Config -> IO ()
+runApi config =
   do
-    spockConfig <- defaultSpockCfg () (spockDbConf dbUrl) ()
-    runSpock port (spock spockConfig api)
+    let apiConfig = subconfig "api" config
+    let dbConfig = subconfig "db" config
+    port <- require apiConfig "port"
+    spockDbConfig <- makeSpockDbConf dbConfig
+    spockConfig <- defaultSpockCfg () spockDbConfig ()
+    runSpock (read port) (spock spockConfig api)
 
-spockDbConf :: ByteString -> PoolOrConn Connection
-spockDbConf dbUrl =
-  PCConn (ConnBuilder (createConnection dbUrl) destroyConnection poolCfg)
+makeSpockDbConf :: Config -> IO (PoolOrConn Connection)
+makeSpockDbConf dbConfig =
+  do
+    poolSize <- require dbConfig "pool_size"
+    return $ PCConn (ConnBuilder (createConnection dbConfig) destroyConnection (poolCfg poolSize))
   where
-    poolCfg = PoolCfg { pc_stripes = 5, pc_resPerStripe = 5, pc_keepOpenTime = 60 }
+    poolCfg poolSize = PoolCfg { pc_stripes = poolSize, pc_resPerStripe = 5, pc_keepOpenTime = 60 }

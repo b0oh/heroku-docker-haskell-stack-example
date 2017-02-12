@@ -8,13 +8,14 @@ RUN stack build http-types wai warp --install-ghc --resolver=lts-7.19
 RUN stack build Spock --resolver=lts-7.19
 COPY stack.yaml /app/src/
 RUN stack build postgresql-simple postgresql-simple-migration --resolver=lts-7.19
-
-RUN mkdir -p /app/src
+RUN stack build configurator --resolver=lts-7.19
 
 ADD . /app/src
 WORKDIR /app/src
 
 RUN stack build
-RUN mkdir /app/user
-RUN cp -r ./migrations /app/user
+
+COPY migrations /app/user/migrations
+COPY config/heroku.conf /app/user
+
 RUN cp $(stack path --dist-dir)/build/docker-haskell/docker-haskell /app/user/docker-haskell

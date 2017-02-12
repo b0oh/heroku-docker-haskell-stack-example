@@ -22,6 +22,7 @@ $ brew install haskell-stack docker docker-machine docker-compose heroku postgre
 $ git clone git@github.com:meatmachine/heroku-docker-haskell-stack-example.git docker-haskell
 $ cd docker-haskell
 $ stack build --install-ghc
+$ cp config/dev.conf.sample config/dev.conf
 ```
 
 ## Database setup
@@ -33,7 +34,7 @@ psql -U postgres -c 'create database docker_haskell_api_dev;'
 ## Running
 
 ```
-$ stack exec docker-haskell
+$ stack exec docker-haskell config/dev.conf
 $ open http://localhost:3000
 ```
 

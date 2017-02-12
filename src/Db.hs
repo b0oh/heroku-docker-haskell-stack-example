@@ -6,6 +6,8 @@ import Database.PostgreSQL.Simple.FromRow (FromRow, fromRow, field)
 import Database.PostgreSQL.Simple.Migration (MigrationCommand(..), MigrationContext(..), MigrationResult(..),
                                              runMigration)
 
+import Config
+
 data Band = Band {
   bandId :: Int,
   bandName :: Text
@@ -14,18 +16,22 @@ data Band = Band {
 instance FromRow Band where
   fromRow = Band <$> field <*> field
 
+createConnection dbConfig = do
+  url <- require dbConfig "url"
+  connectPostgreSQL url
 
-createConnection = connectPostgreSQL
 destroyConnection = close
 
-migrate :: Connection -> IO (MigrationResult String)
-migrate connection =
+migrate :: Config -> Connection -> IO (MigrationResult String)
+migrate config connection =
   do
+    migrationsPath <- require config "migrations_path"
+
     withTransaction connection $ runMigration $
       MigrationContext MigrationInitialization True connection
 
     withTransaction connection $ runMigration $
-      MigrationContext (MigrationDirectory "./migrations") True connection
+      MigrationContext (MigrationDirectory migrationsPath) True connection
 
 selectBands :: Connection -> IO [Band]
 selectBands connection =
